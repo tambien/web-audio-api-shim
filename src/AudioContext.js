@@ -226,6 +226,7 @@ function replaceAudioContext() {
     "createWaveShaper",
     "createPanner",
     "createStereoPanner",
+    "createConstantSource",
     "createConvolver",
     "createChannelSplitter",
     "createChannelMerger",
@@ -275,6 +276,7 @@ function replaceAudioContext() {
     "createWaveShaper",
     "createPanner",
     "createStereoPanner",
+    "createConstantSource",
     "createConvolver",
     "createChannelSplitter",
     "createChannelMerger",
@@ -344,19 +346,15 @@ function installCreateStereoPanner() {
     return;
   }
 
-  let StereoPannerNode = require("stereo-panner-node");
+  require("stereo-panner-node").polyfill()
+}
 
-  //// ### AudioContext.prototype.createStereoPanner
-  //// Creates a StereoPannerNode.
-  ////
-  //// #### Parameters
-  //// - _none_
-  ////
-  //// #### Return
-  //// - `AudioNode as StereoPannerNode`
-  OriginalAudioContext.prototype.createStereoPanner = function() {
-    return new StereoPannerNode(this);
-  };
+function installCreateConstantSource() {
+  if (OriginalAudioContext.prototype.hasOwnProperty("createConstantSource")) {
+    return;
+  }
+
+  require("constant-source-node").polyfill()
 }
 
 function installDecodeAudioData() {
@@ -493,6 +491,7 @@ function installStartRendering() {
 export function install(stage) {
   installCreateAudioWorker();
   installCreateStereoPanner();
+  installCreateConstantSource();
   installDecodeAudioData();
   installStartRendering();
 
